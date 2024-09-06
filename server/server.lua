@@ -73,6 +73,44 @@ RegisterServerEvent('mms-trashcans:server:LookForItems',function()
 end)
 
 
+
+
+
+RegisterServerEvent('mms-trashcans:server:openstorage', function()
+    local src = source
+    local isregistred = exports.vorp_inventory:isCustomInventoryRegistered('Trashcan')
+        if isregistred then
+            exports.vorp_inventory:closeInventory(src, 'Trashcan')
+            exports.vorp_inventory:openInventory(src, 'Trashcan')
+        else
+            exports.vorp_inventory:registerInventory(
+            {
+                id = 'Trashcan',
+                name = 'Mülleimer',
+                limit = Config.TrashcanLimit,
+                acceptWeapons = true,
+                shared = true,
+                ignoreItemStackLimit = true,
+            }
+            )
+            exports.vorp_inventory:openInventory(src, 'Trashcan')
+            isregistred = exports.vorp_inventory:isCustomInventoryRegistered('Trashcan')
+        end
+end)
+
+
+Citizen.CreateThread(function ()
+    while true do
+        Wait(Config.ResetCansTimer)
+        local isregistred = exports.vorp_inventory:isCustomInventoryRegistered('Trashcan')
+        if isregistred then
+        exports.vorp_inventory:deleteCustomInventory('Trashcan')
+        exports.vorp_inventory:removeInventory('Trashcan')
+        end
+    end
+end)
+
+
 --------------------------------------------------------------------------------------------------
 -- start version check
 --------------------------------------------------------------------------------------------------

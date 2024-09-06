@@ -14,10 +14,10 @@ Config.WHLogo = '' -- must be 30x30px
 Config.WHFooterLogo = '' -- must be 30x30px
 Config.WHAvatar = '' -- must be 30x30px
 
--- Script Settingsb
+-- Script Settings
 
 Config.ResetCansTimer = 60 -- Time in Minutes
-
+Config.TrashcanLimit = 250  -- Items Possible in Inventory 
 Config.TrashcanCanBeEmpty = true
 
 Config.FindMoney = true

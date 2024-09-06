@@ -24,8 +24,9 @@ Citizen.CreateThread(function() -- Spawn Trashcans Blips and Stuff
 end)
 
 Citizen.CreateThread(function ()
-    local StartQuestPrompt = BccUtils.Prompts:SetupPromptGroup()
-    local startquestprompt = StartQuestPrompt:RegisterPrompt(_U('Search'), 0x760A9C6F, 1, 1, true, 'hold', {timedeventhash = 'MEDIUM_TIMED_EVENT'})
+    local StartTrashcanPrompt = BccUtils.Prompts:SetupPromptGroup()
+    local SearchTrashcan = StartTrashcanPrompt:RegisterPrompt(_U('Search'), 0x760A9C6F, 1, 1, true, 'hold', {timedeventhash = 'MEDIUM_TIMED_EVENT'})
+    local UseTrashcan = StartTrashcanPrompt:RegisterPrompt(_U('UseInventory'), 0x27D1C284, 1, 1, true, 'hold', {timedeventhash = 'MEDIUM_TIMED_EVENT'})
 
     while true do
         Wait(1)
@@ -39,14 +40,17 @@ Citizen.CreateThread(function ()
         end
         if CloseTrashcan and Distance > 2 then
             sleep = false
-            StartQuestPrompt:ShowGroup(_U('Trashcan'))
-            if startquestprompt:HasCompleted() then
+            StartTrashcanPrompt:ShowGroup(_U('Trashcan'))
+            if UseTrashcan:HasCompleted() then
+                TriggerServerEvent('mms-trashcans:server:openstorage')
+            end
+            if SearchTrashcan:HasCompleted() then
                 Wait(500)
                 SearchedTrashcans[#SearchedTrashcans + 1] = PlayerCoords
                 SearchedCans = true
-                startquestprompt:TogglePrompt(false)
+                SearchTrashcan:TogglePrompt(false)
                 Wait(1000)
-                startquestprompt:TogglePrompt(true)
+                SearchTrashcan:TogglePrompt(true)
                 TriggerEvent('mms-trashcans:client:SearchTrashcan')
             end
         end

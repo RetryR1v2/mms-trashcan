@@ -8,4 +8,5 @@ Locales["de_lang"] = {
     YouGetMoney = 'Du findest im Mülleimer: $ ',
     And = ' Und $ ',
     WHFoundInCan = ' Findet im Mülleimer ',
+    UseInventory = 'Benutzen',
 }
