@@ -79,6 +79,8 @@ end)
 RegisterServerEvent('mms-trashcans:server:openstorage', function()
     local src = source
     local isregistred = exports.vorp_inventory:isCustomInventoryRegistered('Trashcan')
+    print('Is Registred 1')
+    print(isregistred)
         if isregistred then
             exports.vorp_inventory:closeInventory(src, 'Trashcan')
             exports.vorp_inventory:openInventory(src, 'Trashcan')
@@ -101,7 +103,7 @@ end)
 
 Citizen.CreateThread(function ()
     while true do
-        Wait(Config.ResetCansTimer)
+        Wait(Config.ResetCansTimer * 60000)
         local isregistred = exports.vorp_inventory:isCustomInventoryRegistered('Trashcan')
         if isregistred then
         exports.vorp_inventory:deleteCustomInventory('Trashcan')
