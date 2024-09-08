@@ -6,7 +6,8 @@ local CreatedTrashcanBlips = {}
 local CreatedTrashcans = {}
 local SearchedTrashcans = {}
 local SearchedCans = false
-local Distance = 5
+local Distance = 11
+local Searched = false
 
 Citizen.CreateThread(function() -- Spawn Trashcans Blips and Stuff
     
@@ -30,15 +31,18 @@ Citizen.CreateThread(function ()
 
     while true do
         Wait(1)
+        Searched = false
         local sleep = true
         local PlayerCoords = GetEntityCoords(PlayerPedId())
         local CloseTrashcan = Citizen.InvokeNative(0xBFA48E2FF417213F, PlayerCoords.x, PlayerCoords.y, PlayerCoords.z, 1.5,
             GetHashKey(Config.TrashcanProp), 0)
-
         for h,v in ipairs(SearchedTrashcans) do
             Distance = #(v - PlayerCoords)
+            if Distance < 5 then
+                Searched = true
+            end
         end
-        if CloseTrashcan and Distance > 2 then
+        if CloseTrashcan and not Searched then
             sleep = false
             StartTrashcanPrompt:ShowGroup(_U('Trashcan'))
             if UseTrashcan:HasCompleted() then
@@ -53,6 +57,7 @@ Citizen.CreateThread(function ()
                 SearchTrashcan:TogglePrompt(true)
                 TriggerEvent('mms-trashcans:client:SearchTrashcan')
             end
+            Searched = false
         end
         if sleep then
             Wait(1500)
