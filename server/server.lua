@@ -40,6 +40,43 @@ RegisterServerEvent('mms-trashcans:server:LookForItems',function()
     local RewardItem = Config.ItemToFind[RandomIndex]
     local ItemAmount = math.random(RewardItem.AmountMin,RewardItem.AmountMax)
     local MoneyAmont = math.random(Config.MoneyMin,Config.MoneyMax)
+    local Chance = math.random(1,10)
+    if Config.TrashcanCanBeEmpty then
+        if Chance > Config.Chance then
+        if Config.FindItem and not Config.FindMoney then
+            local CanCarry = exports.vorp_inventory:canCarryItem(src, RewardItem.Item, ItemAmount)
+                if CanCarry then
+                exports.vorp_inventory:addItem(src, RewardItem.Item, ItemAmount, nil, nil)
+                VORPcore.NotifyTip(src,_U('YouGetItem') .. ItemAmount .. ' ' .. RewardItem.Label,"right",4000)
+                if Config.WebHook then
+                    VORPcore.AddWebhook(Config.WHTitle, Config.WHLink, Firstname .. ' ' .. Lastname .. _U('WHFoundInCan') .. ItemAmount .. ' ' .. RewardItem.Label , Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
+                end
+            else
+                VORPcore.NotifyTip(src,_U('NoInvetorySpace'),"right",4000)
+            end
+        end
+        if Config.FindMoney and Config.FindItem then
+            local CanCarry = exports.vorp_inventory:canCarryItem(src, RewardItem.Item, ItemAmount)
+                if CanCarry then
+                exports.vorp_inventory:addItem(src, RewardItem.Item, ItemAmount, nil, nil)
+            end
+            VORPcore.NotifyTip(src,_U('YouGetItem') .. ItemAmount .. ' ' .. RewardItem.Label .. _U('And') .. MoneyAmont ,"right",4000)
+            Character.addCurrency(0,MoneyAmont)
+            if Config.WebHook then
+                VORPcore.AddWebhook(Config.WHTitle, Config.WHLink, Firstname .. ' ' .. Lastname .. _U('WHFoundInCan') .. ItemAmount .. ' ' .. RewardItem.Label .. _U('And') .. MoneyAmont , Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
+            end
+        end
+        if Config.FindMoney and not Config.FindItem then
+            VORPcore.NotifyTip(src,_U('YouGetMoney') .. MoneyAmont,"right",4000)
+            Character.addCurrency(0,MoneyAmont)
+            if Config.WebHook then
+                VORPcore.AddWebhook(Config.WHTitle, Config.WHLink, Firstname .. ' ' .. Lastname .. _U('WHFoundInCan') .. MoneyAmont .. ' $', Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
+            end
+        end
+    else
+        VORPcore.NotifyTip(src,_U('TashcanWasEmpty'),"right",4000)
+    end
+else
     if Config.FindItem and not Config.FindMoney then
         local CanCarry = exports.vorp_inventory:canCarryItem(src, RewardItem.Item, ItemAmount)
             if CanCarry then
@@ -70,6 +107,7 @@ RegisterServerEvent('mms-trashcans:server:LookForItems',function()
             VORPcore.AddWebhook(Config.WHTitle, Config.WHLink, Firstname .. ' ' .. Lastname .. _U('WHFoundInCan') .. MoneyAmont .. ' $', Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
         end
     end
+end
 end)
 
 

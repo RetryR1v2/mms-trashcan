@@ -9,4 +9,5 @@ Locales["de_lang"] = {
     And = ' Und $ ',
     WHFoundInCan = ' Findet im Mülleimer ',
     UseInventory = 'Benutzen',
+    TashcanWasEmpty = 'Mülleimer ist Leer',
 }

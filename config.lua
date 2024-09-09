@@ -19,6 +19,7 @@ Config.WHAvatar = '' -- must be 30x30px
 Config.ResetCansTimer = 60 -- Time in Minutes
 Config.TrashcanLimit = 250  -- Items Possible in Inventory 
 Config.TrashcanCanBeEmpty = true
+Config.Chance = 4 -- As lower the number as higher the chance to find item or money
 
 Config.FindMoney = true
 Config.MoneyMin = 5

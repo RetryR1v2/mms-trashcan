@@ -16,7 +16,8 @@ Trashcan System for VORP Core
 - 1.1.2 Added Webhook Support
 - 1.1.3 Added Invetory to Use the Trashcan as Trashcan
 - 1.1.4 Fixed Bug that you Can Run between 2 Trashcans and Search them Over and Over Again Thanks for Reporting
- 
+- 1.1.5 Trashcans Can be Empty Now 
+
 # installation 
 
 
