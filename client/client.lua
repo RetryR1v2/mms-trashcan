@@ -46,7 +46,8 @@ Citizen.CreateThread(function ()
             sleep = false
             StartTrashcanPrompt:ShowGroup(_U('Trashcan'))
             if UseTrashcan:HasCompleted() then
-                TriggerServerEvent('mms-trashcans:server:openstorage')
+                local MyCoords = GetEntityCoords(PlayerPedId())
+                TriggerServerEvent('mms-trashcans:server:openstorage',MyCoords)
             end
             if SearchTrashcan:HasCompleted() then
                 Wait(500)

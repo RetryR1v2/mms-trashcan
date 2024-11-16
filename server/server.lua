@@ -1,5 +1,5 @@
 local VORPcore = exports.vorp_core:GetCore()
-
+local CreatedInventorys = {}
 -----------------------------------------------------------------------
 -- version checker
 -----------------------------------------------------------------------
@@ -114,36 +114,68 @@ end)
 
 
 
-RegisterServerEvent('mms-trashcans:server:openstorage', function()
+RegisterServerEvent('mms-trashcans:server:openstorage', function(MyCoords)
     local src = source
-    local isregistred = exports.vorp_inventory:isCustomInventoryRegistered('Trashcan')
+    local TrashcanFound = false
+    for h,v in ipairs(Config.Trashcans) do
+        if not TrashcanFound then
+            local Distance = #(v.TrashcanCoords - MyCoords)
+            if Distance < 3 then
+                TrashcanFound = true
+                local isregistred = exports.vorp_inventory:isCustomInventoryRegistered(v.TrashcanUniqueID)
+                if isregistred then
+                    exports.vorp_inventory:closeInventory(src, v.TrashcanUniqueID)
+                    exports.vorp_inventory:openInventory(src, v.TrashcanUniqueID)
+                else
+                    exports.vorp_inventory:registerInventory(
+                    {
+                        id = v.TrashcanUniqueID,
+                        name = 'Mülleimer',
+                        limit = Config.TrashcanLimit,
+                        acceptWeapons = true,
+                        shared = true,
+                        ignoreItemStackLimit = true,
+                    })
+                    exports.vorp_inventory:openInventory(src, v.TrashcanUniqueID)
+                    isregistred = exports.vorp_inventory:isCustomInventoryRegistered(v.TrashcanUniqueID)
+                    CreatedInventorys[#CreatedInventorys + 1] = v.TrashcanUniqueID
+                end
+            end
+        end
+    end
+
+    if not TrashcanFound then
+        local isregistred = exports.vorp_inventory:isCustomInventoryRegistered('WorldmapTrashcan')
         if isregistred then
-            exports.vorp_inventory:closeInventory(src, 'Trashcan')
-            exports.vorp_inventory:openInventory(src, 'Trashcan')
+            exports.vorp_inventory:closeInventory(src, 'WorldmapTrashcan')
+            exports.vorp_inventory:openInventory(src, 'WorldmapTrashcan')
         else
             exports.vorp_inventory:registerInventory(
             {
-                id = 'Trashcan',
+                id = 'WorldmapTrashcan',
                 name = 'Mülleimer',
                 limit = Config.TrashcanLimit,
                 acceptWeapons = true,
                 shared = true,
                 ignoreItemStackLimit = true,
-            }
-            )
-            exports.vorp_inventory:openInventory(src, 'Trashcan')
-            isregistred = exports.vorp_inventory:isCustomInventoryRegistered('Trashcan')
+            })
+            exports.vorp_inventory:openInventory(src, 'WorldmapTrashcan')
+            isregistred = exports.vorp_inventory:isCustomInventoryRegistered('WorldmapTrashcan')
+            CreatedInventorys[#CreatedInventorys + 1] = 'WorldmapTrashcan'
         end
+    end
 end)
 
 
 Citizen.CreateThread(function ()
     while true do
         Wait(Config.ResetCansTimer * 60000)
-        local isregistred = exports.vorp_inventory:isCustomInventoryRegistered('Trashcan')
-        if isregistred then
-        exports.vorp_inventory:deleteCustomInventory('Trashcan')
-        exports.vorp_inventory:removeInventory('Trashcan')
+        for h,v in ipairs(CreatedInventorys) do
+            local isregistred = exports.vorp_inventory:isCustomInventoryRegistered(v)
+            if isregistred then
+            exports.vorp_inventory:deleteCustomInventory(v)
+            exports.vorp_inventory:removeInventory(v)
+            end
         end
     end
 end)

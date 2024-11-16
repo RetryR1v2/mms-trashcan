@@ -17,6 +17,8 @@ Trashcan System for VORP Core
 - 1.1.3 Added Invetory to Use the Trashcan as Trashcan
 - 1.1.4 Fixed Bug that you Can Run between 2 Trashcans and Search them Over and Over Again Thanks for Reporting
 - 1.1.5 Trashcans Can be Empty Now 
+- 1.1.6 Every Custom Trashcan has a UniqueID now for Unique Invetory.
+- Standard Worldmap Trashcans have the Same Invetory.
 
 # installation 
 
