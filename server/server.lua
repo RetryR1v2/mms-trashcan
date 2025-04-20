@@ -1,4 +1,4 @@
-local VORPcore = exports.vorp_core:GetCore()
+local Core = exports.vorp_core:GetCore()
 local CreatedInventorys = {}
 -----------------------------------------------------------------------
 -- version checker
@@ -29,10 +29,9 @@ local function CheckVersion()
     end)
 end
 
-
 RegisterServerEvent('mms-trashcans:server:LookForItems',function()
     local src = source
-    local Character = VORPcore.getUser(src).getUsedCharacter
+    local Character = Core.getUser(src).getUsedCharacter
     local Firstname = Character.firstname
     local Lastname = Character.lastname
     local MaxIndex = #Config.ItemToFind
@@ -47,12 +46,12 @@ RegisterServerEvent('mms-trashcans:server:LookForItems',function()
             local CanCarry = exports.vorp_inventory:canCarryItem(src, RewardItem.Item, ItemAmount)
                 if CanCarry then
                 exports.vorp_inventory:addItem(src, RewardItem.Item, ItemAmount, nil, nil)
-                VORPcore.NotifyTip(src,_U('YouGetItem') .. ItemAmount .. ' ' .. RewardItem.Label,"right",4000)
+                Core.NotifyLeft(src,_U('YouGetItem') .. ItemAmount .. ' ' .. RewardItem.Label,"right",4000)
                 if Config.WebHook then
-                    VORPcore.AddWebhook(Config.WHTitle, Config.WHLink, Firstname .. ' ' .. Lastname .. _U('WHFoundInCan') .. ItemAmount .. ' ' .. RewardItem.Label , Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
+                    Core.AddWebhook(Config.WHTitle, Config.WHLink, Firstname .. ' ' .. Lastname .. _U('WHFoundInCan') .. ItemAmount .. ' ' .. RewardItem.Label , Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
                 end
             else
-                VORPcore.NotifyTip(src,_U('NoInvetorySpace'),"right",4000)
+                Core.NotifyLeft(src,_U('NoInvetorySpace'),"right",4000)
             end
         end
         if Config.FindMoney and Config.FindItem then
@@ -60,33 +59,33 @@ RegisterServerEvent('mms-trashcans:server:LookForItems',function()
                 if CanCarry then
                 exports.vorp_inventory:addItem(src, RewardItem.Item, ItemAmount, nil, nil)
             end
-            VORPcore.NotifyTip(src,_U('YouGetItem') .. ItemAmount .. ' ' .. RewardItem.Label .. _U('And') .. MoneyAmont ,"right",4000)
+            Core.NotifyLeft(src,_U('YouGetItem') .. ItemAmount .. ' ' .. RewardItem.Label .. _U('And') .. MoneyAmont ,"right",4000)
             Character.addCurrency(0,MoneyAmont)
             if Config.WebHook then
-                VORPcore.AddWebhook(Config.WHTitle, Config.WHLink, Firstname .. ' ' .. Lastname .. _U('WHFoundInCan') .. ItemAmount .. ' ' .. RewardItem.Label .. _U('And') .. MoneyAmont , Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
+                Core.AddWebhook(Config.WHTitle, Config.WHLink, Firstname .. ' ' .. Lastname .. _U('WHFoundInCan') .. ItemAmount .. ' ' .. RewardItem.Label .. _U('And') .. MoneyAmont , Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
             end
         end
         if Config.FindMoney and not Config.FindItem then
-            VORPcore.NotifyTip(src,_U('YouGetMoney') .. MoneyAmont,"right",4000)
+            Core.NotifyLeft(src,_U('YouGetMoney') .. MoneyAmont,"right",4000)
             Character.addCurrency(0,MoneyAmont)
             if Config.WebHook then
-                VORPcore.AddWebhook(Config.WHTitle, Config.WHLink, Firstname .. ' ' .. Lastname .. _U('WHFoundInCan') .. MoneyAmont .. ' $', Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
+                Core.AddWebhook(Config.WHTitle, Config.WHLink, Firstname .. ' ' .. Lastname .. _U('WHFoundInCan') .. MoneyAmont .. ' $', Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
             end
         end
     else
-        VORPcore.NotifyTip(src,_U('TashcanWasEmpty'),"right",4000)
+        Core.NotifyLeft(src,_U('TashcanWasEmpty'),"right",4000)
     end
 else
     if Config.FindItem and not Config.FindMoney then
         local CanCarry = exports.vorp_inventory:canCarryItem(src, RewardItem.Item, ItemAmount)
             if CanCarry then
             exports.vorp_inventory:addItem(src, RewardItem.Item, ItemAmount, nil, nil)
-            VORPcore.NotifyTip(src,_U('YouGetItem') .. ItemAmount .. ' ' .. RewardItem.Label,"right",4000)
+            Core.NotifyLeft(src,_U('YouGetItem') .. ItemAmount .. ' ' .. RewardItem.Label,"right",4000)
             if Config.WebHook then
-                VORPcore.AddWebhook(Config.WHTitle, Config.WHLink, Firstname .. ' ' .. Lastname .. _U('WHFoundInCan') .. ItemAmount .. ' ' .. RewardItem.Label , Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
+                Core.AddWebhook(Config.WHTitle, Config.WHLink, Firstname .. ' ' .. Lastname .. _U('WHFoundInCan') .. ItemAmount .. ' ' .. RewardItem.Label , Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
             end
         else
-            VORPcore.NotifyTip(src,_U('NoInvetorySpace'),"right",4000)
+            Core.NotifyLeft(src,_U('NoInvetorySpace'),"right",4000)
         end
     end
     if Config.FindMoney and Config.FindItem then
@@ -94,25 +93,21 @@ else
             if CanCarry then
             exports.vorp_inventory:addItem(src, RewardItem.Item, ItemAmount, nil, nil)
         end
-        VORPcore.NotifyTip(src,_U('YouGetItem') .. ItemAmount .. ' ' .. RewardItem.Label .. _U('And') .. MoneyAmont ,"right",4000)
+        Core.NotifyLeft(src,_U('YouGetItem') .. ItemAmount .. ' ' .. RewardItem.Label .. _U('And') .. MoneyAmont ,"right",4000)
         Character.addCurrency(0,MoneyAmont)
         if Config.WebHook then
-            VORPcore.AddWebhook(Config.WHTitle, Config.WHLink, Firstname .. ' ' .. Lastname .. _U('WHFoundInCan') .. ItemAmount .. ' ' .. RewardItem.Label .. _U('And') .. MoneyAmont , Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
+            Core.AddWebhook(Config.WHTitle, Config.WHLink, Firstname .. ' ' .. Lastname .. _U('WHFoundInCan') .. ItemAmount .. ' ' .. RewardItem.Label .. _U('And') .. MoneyAmont , Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
         end
     end
     if Config.FindMoney and not Config.FindItem then
-        VORPcore.NotifyTip(src,_U('YouGetMoney') .. MoneyAmont,"right",4000)
+        Core.NotifyLeft(src,_U('YouGetMoney') .. MoneyAmont,"right",4000)
         Character.addCurrency(0,MoneyAmont)
         if Config.WebHook then
-            VORPcore.AddWebhook(Config.WHTitle, Config.WHLink, Firstname .. ' ' .. Lastname .. _U('WHFoundInCan') .. MoneyAmont .. ' $', Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
+            Core.AddWebhook(Config.WHTitle, Config.WHLink, Firstname .. ' ' .. Lastname .. _U('WHFoundInCan') .. MoneyAmont .. ' $', Config.WHColor, Config.WHName, Config.WHLogo, Config.WHFooterLogo, Config.WHAvatar)
         end
     end
 end
 end)
-
-
-
-
 
 RegisterServerEvent('mms-trashcans:server:openstorage', function(MyCoords)
     local src = source
@@ -153,7 +148,7 @@ RegisterServerEvent('mms-trashcans:server:openstorage', function(MyCoords)
             exports.vorp_inventory:registerInventory(
             {
                 id = 'WorldmapTrashcan',
-                name = 'Mülleimer',
+                name = 'Trashcan',
                 limit = Config.TrashcanLimit,
                 acceptWeapons = true,
                 shared = true,
@@ -165,7 +160,6 @@ RegisterServerEvent('mms-trashcans:server:openstorage', function(MyCoords)
         end
     end
 end)
-
 
 Citizen.CreateThread(function ()
     while true do
@@ -180,6 +174,27 @@ Citizen.CreateThread(function ()
     end
 end)
 
+RegisterServerEvent('mms-trashcans:server:clearInventory', function(coords)
+    local src = source
+
+    local function GetDistanceBetween(vec1, vec2)
+        return math.sqrt((vec1.x - vec2.x)^2 + (vec1.y - vec2.y)^2 + (vec1.z - vec2.z)^2)
+    end
+
+    for _, v in ipairs(Config.Trashcans) do
+        local dist = GetDistanceBetween(v.TrashcanCoords, coords)
+        if dist < 3.0 then
+            if exports.vorp_inventory:isCustomInventoryRegistered(v.TrashcanUniqueID) then
+                exports.vorp_inventory:deleteCustomInventory(v.TrashcanUniqueID)
+                exports.vorp_inventory:removeInventory(v.TrashcanUniqueID)
+                Core.NotifyLeft(src, _U('TrashEmptied'), "right", 3000)
+            else
+                Core.NotifyLeft(src, _U('TashcanWasEmpty'), "right", 3000)
+            end
+            return
+        end
+    end
+end)
 
 --------------------------------------------------------------------------------------------------
 -- start version check
