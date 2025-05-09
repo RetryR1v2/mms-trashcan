@@ -28,6 +28,7 @@ Citizen.CreateThread(function ()
     local StartTrashcanPrompt = BccUtils.Prompts:SetupPromptGroup()
     local SearchTrashcan = StartTrashcanPrompt:RegisterPrompt(_U('Search'), 0x760A9C6F, 1, 1, true, 'hold', {timedeventhash = 'MEDIUM_TIMED_EVENT'})
     local UseTrashcan = StartTrashcanPrompt:RegisterPrompt(_U('UseInventory'), 0x27D1C284, 1, 1, true, 'hold', {timedeventhash = 'MEDIUM_TIMED_EVENT'})
+    local ClearTrashcan = StartTrashcanPrompt:RegisterPrompt(_U('EmptyTrash'), 0x0522B243, 1, 1, true, 'hold', {timedeventhash = 'MEDIUM_TIMED_EVENT'}) -- F
 
     while true do
         Wait(1)
@@ -57,6 +58,10 @@ Citizen.CreateThread(function ()
                 Wait(1000)
                 SearchTrashcan:TogglePrompt(true)
                 TriggerEvent('mms-trashcans:client:SearchTrashcan')
+            end
+	    if ClearTrashcan:HasCompleted() then
+                local MyCoords = GetEntityCoords(PlayerPedId())
+                TriggerServerEvent('mms-trashcans:server:clearInventory', MyCoords)
             end
             Searched = false
         end
