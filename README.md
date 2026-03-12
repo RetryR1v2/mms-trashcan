@@ -28,7 +28,8 @@ Trashcan System for VORP Core
 
 # installation 
 
-
+- Add `mms_trashcan` to your resources
+- Add `ensure mms_trashcan` to your `server.cfg`
 
 # Required
 
