@@ -1,4 +1,4 @@
-local VORPcore = exports.vorp_core:GetCore()
+local Core = exports.vorp_core:GetCore()
 local BccUtils = exports['bcc-utils'].initiate()
 local progressbar = exports.vorp_progressbar:initiate()
 
@@ -6,11 +6,9 @@ local CreatedTrashcanBlips = {}
 local CreatedTrashcans = {}
 local SearchedTrashcans = {}
 local SearchedCans = false
-local Distance = 11
-local Searched = false
 
 Citizen.CreateThread(function() -- Spawn Trashcans Blips and Stuff
-    
+
     for h,v in ipairs(Config.Trashcans) do
         if v.TrashcanBlip then
             local CanBlips = BccUtils.Blips:SetBlip( _U('Trashcan'), v.BlipSprite, 3.0, v.TrashcanCoords.x, v.TrashcanCoords.y, v.TrashcanCoords.z )
@@ -26,45 +24,59 @@ end)
 
 Citizen.CreateThread(function ()
     local StartTrashcanPrompt = BccUtils.Prompts:SetupPromptGroup()
-    local SearchTrashcan = StartTrashcanPrompt:RegisterPrompt(_U('Search'), 0x760A9C6F, 1, 1, true, 'hold', {timedeventhash = 'MEDIUM_TIMED_EVENT'})
-    local UseTrashcan = StartTrashcanPrompt:RegisterPrompt(_U('UseInventory'), 0x27D1C284, 1, 1, true, 'hold', {timedeventhash = 'MEDIUM_TIMED_EVENT'})
+    local SearchTrashcan = StartTrashcanPrompt:RegisterPrompt(_U('Search'), 0x760A9C6F, 1, 1, true, 'hold', {timedeventhash = 'MEDIUM_TIMED_EVENT'}) -- G
+    local UseTrashcan = StartTrashcanPrompt:RegisterPrompt(_U('UseInventory'), 0x27D1C284, 1, 1, true, 'hold', {timedeventhash = 'MEDIUM_TIMED_EVENT'}) -- R
     local ClearTrashcan = StartTrashcanPrompt:RegisterPrompt(_U('EmptyTrash'), 0x0522B243, 1, 1, true, 'hold', {timedeventhash = 'MEDIUM_TIMED_EVENT'}) -- F
 
     while true do
         Wait(1)
-        Searched = false
         local sleep = true
         local PlayerCoords = GetEntityCoords(PlayerPedId())
         local CloseTrashcan = Citizen.InvokeNative(0xBFA48E2FF417213F, PlayerCoords.x, PlayerCoords.y, PlayerCoords.z, 1.5,
             GetHashKey(Config.TrashcanProp), 0)
+
+        -- Check if this specific trashcan location has been searched (cooldown)
+        local AlreadySearched = false
         for h,v in ipairs(SearchedTrashcans) do
-            Distance = #(v - PlayerCoords)
-            if Distance < 5 then
-                Searched = true
+            if #(v - PlayerCoords) < 5 then
+                AlreadySearched = true
+                break
             end
         end
-        if CloseTrashcan and not Searched then
+
+        if CloseTrashcan then
             sleep = false
             StartTrashcanPrompt:ShowGroup(_U('Trashcan'))
+
+            -- Always allow Open and Empty regardless of search cooldown
             if UseTrashcan:HasCompleted() then
                 local MyCoords = GetEntityCoords(PlayerPedId())
-                TriggerServerEvent('mms-trashcans:server:openstorage',MyCoords)
+                TriggerServerEvent('mms-trashcans:server:openstorage', MyCoords)
             end
-            if SearchTrashcan:HasCompleted() then
-                Wait(500)
-                SearchedTrashcans[#SearchedTrashcans + 1] = PlayerCoords
-                SearchedCans = true
-                SearchTrashcan:TogglePrompt(false)
-                Wait(1000)
-                SearchTrashcan:TogglePrompt(true)
-                TriggerEvent('mms-trashcans:client:SearchTrashcan')
-            end
-	    if ClearTrashcan:HasCompleted() then
+
+            if ClearTrashcan:HasCompleted() then
                 local MyCoords = GetEntityCoords(PlayerPedId())
                 TriggerServerEvent('mms-trashcans:server:clearInventory', MyCoords)
             end
-            Searched = false
+
+            -- Only allow Search if not on cooldown
+            if AlreadySearched then
+                SearchTrashcan:TogglePrompt(false)
+            else
+                SearchTrashcan:TogglePrompt(true)
+                if SearchTrashcan:HasCompleted() then
+                    SearchedTrashcans[#SearchedTrashcans + 1] = PlayerCoords
+                    SearchedCans = true
+                    SearchTrashcan:TogglePrompt(false)
+                    Wait(500)
+                    TriggerEvent('mms-trashcans:client:SearchTrashcan')
+                end
+            end
+        else
+            -- Not near a trashcan — restore search prompt visibility for next approach
+            SearchTrashcan:TogglePrompt(true)
         end
+
         if sleep then
             Wait(1500)
         end
@@ -75,25 +87,20 @@ end)
 
 RegisterNetEvent('mms-trashcans:client:SearchTrashcan')
 AddEventHandler('mms-trashcans:client:SearchTrashcan',function()
-        CrouchAnim()
+    CrouchAnim()
         progressbar.start(_U('SearchingBinProgressbar'), 7000, function ()
         end, 'linear')
-        Wait(7000)
-        ClearPedTasks(PlayerPedId())
-        TriggerServerEvent('mms-trashcans:server:LookForItems')
+    Wait(7000)
+    ClearPedTasks(PlayerPedId())
+    TriggerServerEvent('mms-trashcans:server:LookForItems')
 end)
 
 Citizen.CreateThread(function()
-    while not SearchedCans do
-        Citizen.Wait(5000)
+    while true do
+        Citizen.Wait(Config.ResetCansTimer * 60000)
         if SearchedCans then
-            while true do
-                Citizen.Wait(Config.ResetCansTimer * 60000)
-                for i, v in ipairs(SearchedTrashcans) do  -- Tabelle leeren
-                    SearchedTrashcans[i] = nil
-                    SearchedCans = false
-                end
-            end
+            SearchedTrashcans = {}
+            SearchedCans = false
         end
     end
 end)
@@ -119,9 +126,9 @@ RegisterNetEvent('onResourceStop',function(resource)
     if resource == GetCurrentResourceName() then
         for _, Trashcans in ipairs(CreatedTrashcans) do
             Trashcans:Remove()
-	    end
+        end
         for _, blips in ipairs(CreatedTrashcanBlips) do
             blips:Remove()
-	    end
+        end
     end
 end)
