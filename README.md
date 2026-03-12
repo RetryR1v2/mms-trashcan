@@ -6,7 +6,8 @@ Trashcan System for VORP Core
  
 - Place Trashcans Around your Map and Town
 - Every Trashcan can be Searched Once then after The Reset Again
-- Reward System Money or Cash or Both
+- Reward System Money or Items or Both
+- Trashcans can be Filled and Emptied 
 - Webhook Suppport
 
 # Changelog
@@ -19,6 +20,11 @@ Trashcan System for VORP Core
 - 1.1.5 Trashcans Can be Empty Now 
 - 1.1.6 Every Custom Trashcan has a UniqueID now for Unique Invetory.
 - Standard Worldmap Trashcans have the Same Invetory.
+- 1.2.0
+  - fixed open inventory bug
+  - added the ability to open inventory after search
+  - added the ability to empty inventory
+  - fixed notifications
 
 # installation 
 
@@ -27,6 +33,7 @@ Trashcan System for VORP Core
 # Required
 
 vorp_core
+vorp_inventory
 
 
 # CREDITS
