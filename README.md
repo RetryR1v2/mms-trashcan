@@ -32,8 +32,8 @@ Trashcan System for VORP Core
 
 # Required
 
-vorp_core
-vorp_inventory
+- vorp_core
+- vorp_inventory
 
 
 # CREDITS
