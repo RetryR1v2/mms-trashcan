@@ -40,3 +40,4 @@ Trashcan System for VORP Core
 # CREDITS
 - Discord: https://discord.gg/Hua9DFXZYN
 - GitHub: https://github.com/RetryR1v2/mms-trashcan
+- Special thanks to: ImherHela
