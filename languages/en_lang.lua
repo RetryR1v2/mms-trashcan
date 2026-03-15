@@ -1,0 +1,15 @@
+Locales["en_lang"] = {
+    Trashcan = 'Trashcan',
+    Search = 'Search',
+    AlreadySearched = 'This trashcan has already been searched.',
+    SearchingBinProgressbar = 'Searching the trashcan... ',
+    YouGetItem = 'You found: ',
+    NoInvetorySpace = 'Your bag is too full!',
+    YouGetMoney = 'You found: $ ',
+    And = ' and $ ',
+    WHFoundInCan = ' Found in Trashcan: ',
+    UseInventory = 'Open',
+    TashcanWasEmpty = 'The trashcan is empty',
+    EmptyTrash = 'Empty',
+    TrashEmptied = 'Trashcan emptied!',
+}

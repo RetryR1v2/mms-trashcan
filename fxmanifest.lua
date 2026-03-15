@@ -3,7 +3,7 @@ rdr3_warning 'I acknowledge that this is a prerelease build of RedM, and I am aw
 game 'rdr3'
 
 description 'mms-trashcan'
-version '1.1.6'
+version '1.2.0'
 author 'Markus Mueller'
 
 client_scripts {
@@ -23,6 +23,7 @@ shared_scripts {
 
 dependency {
 	'vorp_core',
+	'vorp_inventory',
 }
 
 lua54 'yes'
