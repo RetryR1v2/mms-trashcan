@@ -18,13 +18,14 @@ local function CheckVersion()
             return 
         end
 
-      
-        if text == currentVersion then
+        local latestVersion = text:gsub('%s+', '')
+
+        if latestVersion == currentVersion then
             versionCheckPrint('success', 'You are running the latest version.')
         else
             versionCheckPrint('error', ('Current Version: %s'):format(currentVersion))
-            versionCheckPrint('success', ('Latest Version: %s'):format(text))
-            versionCheckPrint('error', ('You are currently running an outdated version, please update to version %s'):format(text))
+            versionCheckPrint('success', ('Latest Version: %s'):format(latestVersion))
+            versionCheckPrint('error', ('You are currently running an outdated version, please update to version %s'):format(latestVersion))
         end
     end)
 end
